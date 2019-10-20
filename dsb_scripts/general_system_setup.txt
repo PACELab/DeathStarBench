@@ -1,0 +1,31 @@
+DeathStar - System setup
+Setting up social server
+
+https://github.com/delimitrou/DeathStarBench  192.168.0.136, 130.245.169.78 dockerclient
+192.168.0.142 dockerleader
+192.168.0.137 dockerworker1
+192.168.0.138 dockerworker2
+192.168.0.139 dockerworker3
+
+
+curl -s https://install.zerotier.com | sudo bash
+sudo zerotier-cli status
+
+
+git clone https://github.com/delimitrou/DeathStarBench.git
+sudo apt install python3-pip
+python3 -m pip install aiohttp
+python3 -m pip install asyncio
+sudo apt-get install libssl-dev
+sudo apt-get install libz-dev
+sudo apt-get install luarocks
+sudo luarocks install luasocket
+echo 'export HISTTIMEFORMAT="%d/%m/%y %T "' >> ~/.bash_profile
+source ~/.bash_profile 
+
+sudo snap install docker
+sudo apt  install docker-compose
+
+cd wrk2
+sudo make clean
+sudo make
