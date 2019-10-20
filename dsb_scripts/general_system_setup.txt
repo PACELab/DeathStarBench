@@ -1,7 +1,8 @@
 DeathStar - System setup
-Setting up social server
 
-https://github.com/delimitrou/DeathStarBench  192.168.0.136, 130.245.169.78 dockerclient
+https://github.com/delimitrou/DeathStarBench
+
+192.168.0.136, 130.245.169.78 dockerclient
 192.168.0.142 dockerleader
 192.168.0.137 dockerworker1
 192.168.0.138 dockerworker2
