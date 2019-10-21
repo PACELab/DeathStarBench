@@ -32,3 +32,8 @@ sudo apt  install docker-compose
 cd wrk2
 sudo make clean
 sudo make
+
+
+remove app armor
+sudo docker info
+sudo aa-remove-unknown
