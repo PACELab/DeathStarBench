@@ -24,7 +24,9 @@ sudo luarocks install luasocket
 echo 'export HISTTIMEFORMAT="%d/%m/%y %T "' >> ~/.bash_profile
 source ~/.bash_profile 
 
-sudo snap install docker
+DONT sudo snap install docker
+DO: https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
 sudo apt  install docker-compose
 
 cd wrk2
