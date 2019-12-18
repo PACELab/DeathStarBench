@@ -1,0 +1,72 @@
+version: "2"
+services:
+  user:
+    build: .
+    image: hotel_reserv_user_single_node
+    entrypoint: user
+    container_name: 'hotel_reserv_user'
+    ports:
+      - "8086:8086"
+    depends_on:
+      - mongodb-user
+    restart: always
+    cpuset: "0"
+
+  reservation:
+    build: .
+    image: hotel_reserv_rsv_single_node
+    entrypoint: reservation
+    container_name: 'hotel_reserv_reservation'
+    ports:
+      - "8087:8087"
+    depends_on:
+      - mongodb-reservation
+      - memcached-reserve
+    restart: always
+    cpuset: "0"
+
+  memcached-reserve:
+    image: memcached
+    # hostname: user-memcached
+    container_name: 'hotel_reserv_reservation_mmc'
+    ports:
+      - 11214:11211
+    restart: always
+    environment:
+      - MEMCACHED_CACHE_SIZE=128
+      - MEMCACHED_THREADS=2
+    logging:
+      options:
+        max-size: 50m
+    cpuset: "0"
+
+  mongodb-reservation:
+    image: mongo
+    container_name: 'hotel_reserv_reservation_mongo'
+    hostname: reservation-db
+    ports:
+      - "27022:27017"
+    restart: always
+    cpuset: "0"
+    volumes:
+      - reservation:/data/db
+
+  mongodb-user:
+    image: mongo
+    container_name: 'hotel_reserv_user_mongo'
+    hostname: user-db
+    ports:
+      - "27023:27017"
+    restart: always
+    cpuset: "0"
+    volumes:
+      - user:/data/db
+
+volumes:
+  reservation:
+  user:
+
+networks:
+  default:
+    external:
+      name: hotelReservation

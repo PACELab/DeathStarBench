@@ -1,0 +1,96 @@
+version: "2"
+services:
+  #consul:
+  #image: consul:latest
+  #ports:
+  #- "8300:8300"
+  #- "8400:8400"
+  #- "8500:8500"
+  #- "8600:53/udp"
+  #restart: always
+
+  frontend:
+    build: .
+    image: hotel_reserv_frontend_single_node
+    entrypoint: frontend
+    container_name: 'hotel_reserv_frontend'
+    ports:
+      - "5000:5000"
+    restart: always
+    cpuset: "0"
+
+  profile:
+    build: .
+    image: hotel_reserv_profile_single_node
+    entrypoint: profile
+    container_name: 'hotel_reserv_profile'
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb-profile
+      - memcached-profile
+      #- consul
+    restart: always
+    cpuset: "0"
+
+  search:
+    build: .
+    image: hotel_reserv_search_single_node
+    entrypoint: search
+    container_name: 'hotel_reserv_search'
+    ports:
+      - "8082:8082"
+    restart: always
+    cpuset: "0"
+      # environment:
+    # - GRPC_GO_LOG_VERBOSITY_LEVEL=2
+    # - GRPC_GO_LOG_SEVERITY_LEVEL=info
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: 'hotel_reserv_jaeger'
+    ports:
+      - "14269"
+      - "5778:5778"
+      - "14268:14268"
+      - "14267"
+      - "16686:16686"
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+    restart: always
+    cpuset: "0"
+
+  memcached-profile:
+    image: memcached
+    # hostname: user-memcached
+    container_name: 'hotel_reserv_profile_mmc'
+    ports:
+      - 11213:11211
+    restart: always
+    environment:
+      - MEMCACHED_CACHE_SIZE=128
+      - MEMCACHED_THREADS=2
+    logging:
+      options:
+        max-size: 50m
+    cpuset: "0"
+
+  mongodb-profile:
+    image: mongo
+    container_name: 'hotel_reserv_profile_mongo'
+    hostname: profile-db
+    ports:
+      - "27019:27017"
+    restart: always
+    cpuset: "0"
+    volumes:
+      - profile:/data/db
+
+volumes:
+  profile:
+
+networks:
+  default:
+    external:
+      name: hotelReservation
